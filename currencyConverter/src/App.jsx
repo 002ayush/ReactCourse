@@ -1,0 +1,87 @@
+import { useState } from 'react'
+import {InputBox} from './components'
+import swapImage from './assets/swapImage.png'
+import useCurrencyInfo from './hooks/useCurrencyinfo'
+function App() {
+  const [amount,setAmount] = useState(0)
+  const [from,setFrom] = useState("usd")
+  const [to,setTo] = useState("inr")
+  const [convertedAmount,setConvertedAmount] = useState(0)
+  const currencyInfo = useCurrencyInfo(from)
+  const options = Object.keys(currencyInfo)
+  
+  const swap = () => {
+    setFrom(to)
+    setTo(from)
+    setConvertedAmount(amount)
+    setAmount(convertedAmount)
+  }
+  const convert = () => {
+    setConvertedAmount(amount * currencyInfo[to])
+  }
+  return (
+    <>
+    
+    <div
+
+        className="w-full h-screen flex flex-col justify-center items-center
+        gap-2 bg-cover bg-no-repeat opacity-75  relative "
+        style={{backgroundImage:`url('https://images.pexels.com/photos/210600/pexels-photo-210600.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')`}}
+        
+    >
+      <div className='font-bold text-3xl'>
+      <h1 className='text-white'>Currency Converter</h1>
+    </div>
+      
+        <div className="w-full">
+            <div className="w-full max-w-md mx-auto border border-gray-60 rounded-lg p-5 backdrop-blur-sm bg-white/30 z-50" style={{'backgroundImage':`url('https://images.pexels.com/photos/47344/dollar-currency-money-us-dollar-47344.jpeg?auto=compress&cs=tinysrgb&w=600')`}}>
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        convert();
+                       
+                    }}
+                >
+                    <div className="w-full mb-1">
+                        <InputBox
+                            label="From"
+                            amount = {amount}
+                            onAmountChange={(amount) => setAmount(amount)}
+                            currencyOptions = {options}
+                            onCurrencyChange = {(currency) => setFrom(currency)}
+                            selectCurrency = {from}
+                        />
+                    </div>
+                    <div className="relative w-full h-0.5">
+                        <button
+                            type="button"
+                            className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 "
+                            onClick={swap}
+                            
+                        >
+                            <img src={swapImage} alt="" width={25} />
+                        </button>
+                    </div>
+                    <div className="w-full mt-1 mb-4">
+                        <InputBox
+                            label="To"
+                            amount = {convertedAmount}
+                            currencyOptions = {options}
+                            onCurrencyChange = {(currency) => setTo(currency)}
+                            selectCurrency = {to}
+                            amountDisable
+                            
+                        />
+                    </div>
+                    <button type="submit" className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg">
+                        Convert {from.toUpperCase()} to {to.toUpperCase()}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    </>
+  )
+}
+
+export default App
